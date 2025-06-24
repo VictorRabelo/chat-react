@@ -7,25 +7,67 @@ function Login() {
   const { login } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await login({ email, password });
+    try {
+      await login({ email, password });
+    } catch (err) {
+      setError('Invalid email or password.');
+    }
   };
 
   return (
     <motion.main
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      className="flex flex-1 items-center justify-center"
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      className="flex min-h-screen items-center justify-center bg-gray-100 dark:bg-gray-900 px-4"
     >
-      <form onSubmit={handleSubmit} className="bg-white dark:bg-gray-700 p-6 rounded shadow w-80">
-        <h1 className="text-xl mb-4 text-center text-gray-900 dark:text-white">Login</h1>
-        <FormField label="Email" type="email" value={email} onChange={setEmail} />
-        <FormField label="Password" type="password" value={password} onChange={setPassword} />
-        <button type="submit" className="w-full py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+      <form
+        onSubmit={handleSubmit}
+        className="w-full max-w-sm bg-white dark:bg-gray-800 rounded-lg shadow-md p-8"
+      >
+        <h1 className="text-2xl font-semibold text-center text-gray-900 dark:text-white mb-6">
+          Sign in to your account
+        </h1>
+
+        {error && (
+          <div className="mb-4 text-sm text-red-500 text-center">
+            {error}
+          </div>
+        )}
+
+        <FormField
+          label="Email"
+          type="email"
+          value={email}
+          onChange={setEmail}
+          required
+        />
+
+        <FormField
+          label="Password"
+          type="password"
+          value={password}
+          onChange={setPassword}
+          required
+        />
+
+        <button
+          type="submit"
+          className="mt-4 w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded transition-colors duration-200"
+        >
           Sign In
         </button>
+
+        <p className="mt-4 text-center text-sm text-gray-500 dark:text-gray-300">
+          Don't have an account?{' '}
+          <a href="/register" className="text-blue-500 hover:underline">
+            Create one
+          </a>
+        </p>
       </form>
     </motion.main>
   );
